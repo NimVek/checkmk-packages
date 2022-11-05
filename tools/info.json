@@ -1,0 +1,17 @@
+{
+  "author": "NimVek <NimVek@users.noreply.github.com>",
+  "description": "",
+  "download_url": "https://github.com/NimVek/checkmk-packages/tree/main/tools",
+  "files": {
+    "bin": [
+      "randomize_long_intervals.sh"
+    ]
+  },
+  "name": "tools",
+  "num_files": 1,
+  "title": "Bash Tools",
+  "version": "1.0.0",
+  "version.min_required": "2.0.0p23",
+  "version.packaged": "2.0.0p23",
+  "version.usable_until": null
+}
