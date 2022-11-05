@@ -29,6 +29,6 @@ pushd $PACKAGE_DIR
 
     cat info.json | jq --sort-keys . | tee info.json
 
-    find . -type f -name "*.py" -print0 | xargs -0 -n 1 black
-    find . -type f -name "*.py" -print0 | xargs -0 -n 1 isort --profile black
+    find . -type f -name "*.py" -print0 | xargs -0 -n 1 --no-run-if-empty black
+    find . -type f -name "*.py" -print0 | xargs -0 -n 1 --no-run-if-empty isort --profile black
 popd
