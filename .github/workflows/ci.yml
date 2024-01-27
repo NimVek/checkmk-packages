@@ -1,0 +1,43 @@
+---
+name: Continuous Integration
+
+on  :
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        include:
+          - os: ubuntu-latest
+            CACHE_PRE_COMMIT: ~/.cache/pre-commit
+
+    name: Lint
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Caching
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ matrix.CACHE_PRE_COMMIT }}
+          key: lint-${{ runner.os }}-${{ hashFiles('**/.pre-commit-config.yaml')
+            }}
+          restore-keys: |
+            lint-${{ runner.os }}-
+
+      - name: Install pre-commit & dependencies
+        run: |
+          sudo apt-get install -y pre-commit shellcheck
+
+      - name: Lint
+        run: |
+          pre-commit run --all-files
