@@ -29,8 +29,7 @@ jobs:
         with:
           path: |
             ${{ matrix.CACHE_PRE_COMMIT }}
-          key: lint-${{ runner.os }}-${{ hashFiles('**/.pre-commit-config.yaml')
-            }}
+          key: lint-${{ runner.os }}-${{ hashFiles('**/.pre-commit-config.yaml') }}
           restore-keys: |
             lint-${{ runner.os }}-
 

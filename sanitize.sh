@@ -7,27 +7,27 @@ LC_ALL=C.UTF-8
 
 PACKAGE_DIR=$1
 
-pushd $PACKAGE_DIR
-    NAME=$(basename $(pwd))
-    cat info.json | jq ".name=\"${NAME}\"" | tee info.json
-    cat info.json | jq '.files={}' | tee info.json
+pushd "$PACKAGE_DIR"
+    NAME=$(basename "$(pwd)")
+    jq ".name=\"${NAME}\"" info.json| sponge info.json
+    jq '.files={}' info.json | sponge info.json
     for part in $(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | sort) ; do
-        cat info.json | jq ".files.${part}=[]" | tee info.json
-	pushd ${part}
+        jq ".files.${part}=[]" info.json | sponge info.json
+	pushd "${part}"
 	    for element in $(find . -type f -printf '%P\n' | sort) ; do
-		cat ../info.json | jq ".files.${part} += [\"$element\"]" | tee ../info.json
+		jq ".files.${part} += [\"$element\"]" ../info.json | sponge  ../info.json
 	    done
 	popd
     done
     COUNT=$(find . -mindepth 2 -type f | wc -l)
-    cat info.json | jq ".num_files=${COUNT}" | tee info.json
+    jq ".num_files=${COUNT}" info.json | sponge info.json
     MIN_VERSION=$(jq -r .\"version.min_required\" info.json)
-    cat info.json | jq ".\"version.packaged\"=\"${MIN_VERSION}\"" | tee info.json
+    jq ".\"version.packaged\"=\"${MIN_VERSION}\"" info.json | sponge info.json
 
-    cat info.json | jq '.author="NimVek <NimVek@users.noreply.github.com>"' | tee info.json
-    cat info.json | jq ".download_url=\"https://github.com/NimVek/checkmk-packages/tree/main/${NAME}\"" | tee info.json
+    jq '.author="NimVek <NimVek@users.noreply.github.com>"' info.json | sponge info.json
+    jq ".download_url=\"https://github.com/NimVek/checkmk-packages/tree/main/${NAME}\"" info.json | sponge info.json
 
-    cat info.json | jq --sort-keys . | tee info.json
+    jq --sort-keys . info.json | sponge info.json
 
     find . -type f -name "*.py" -print0 | xargs -0 -n 1 --no-run-if-empty black
     find . -type f -name "*.py" -print0 | xargs -0 -n 1 --no-run-if-empty isort --profile black
